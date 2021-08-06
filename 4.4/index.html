@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformation Example with Floor, Table, Box</title>
+    <!-- script for matrix calculation -->
+    <script type="text/javascript" src="./glMatrix.js"></script>
+  </head>
+  <body>
+    <canvas id="myGLCanvas" width="500" height="500"></canvas>
+
+    <!-- script for vertex shader -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+      attribute vec4 aVertexColor;
+
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+
+      varying vec4 vColor;
+
+      void main() {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+      }
+    </script>
+
+    <!-- script for fragment shader -->
+    <script id="shader-fs" type="x-shader/x-fragment">
+      precision mediump float;
+
+      varying vec4 vColor;
+
+      void main() {
+        gl_FragColor = vColor;
+      }
+    </script>
+
+    <!-- script for set and call webgl program -->
+    <script type="text/javascript" src="./index.js"></script>
+  </body>
+</html>
