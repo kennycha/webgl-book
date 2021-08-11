@@ -289,8 +289,45 @@ const setupBuffers = () => {
   setupCubeBuffers();
 };
 
+const uploadModelViewMatrixToShader = () => {
+  gl.uniformMatrix4fv(shaderProgram.uniformMVMatrix, false, modelViewMatrix)
+}
+
+const uploadProjectionMatrixToShader = () => {
+  gl.uniformMatrix4fv(shaderProgram.uniformProjMatrix, false, projectionMatrix)
+}
+
+const drawFloor = (r, g, b, a) => {
+  gl.disableVertexAttribArray(shaderProgram.vertexColorAttribute)
+  gl.vertexAttrib4f(shaderProgram.vertexColorAttribute, r, g, b, a)
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer)
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, floorVertexIndexBuffer)
+  gl.drawElements(gl.TRIANGLE_FAN, floorVertexIndexBuffer.numberOfItems, gl.UNSIGNED_SHORT, 0)
+}
+
+const draw = () => {
+  gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  
+  mat4.perspective(60, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, projectionMatrix)
+  mat4.identity(modelViewMatrix)
+  mat4.lookAt([8, 5, -10], [0, 0, 0], [0, 1, 0], modelViewMatrix)
+
+  uploadModelViewMatrixToShader()
+  uploadProjectionMatrixToShader()
+
+  drawFloor(1.0, 0.0, 0.0, 1.0)
+}
+
 const startup = () => {
   canvas = document.getElementById("myGLCanvas");
   gl = createGLContext(canvas);
   setupShaders();
+  setupBuffers()
+  gl.clear(1.0, 1.0, 1.0, 1.0)
+  gl.enable(gl.DEPTH_TEST)
+
+  draw()
 };
