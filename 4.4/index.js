@@ -317,6 +317,28 @@ const drawCube = (r, g, b, a) => {
   gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numberOfItems, gl.UNSIGNED_SHORT, 0)
 }
 
+const drawTable = () => {
+  // table top
+  pushModelViewMatrix()
+  mat4.translate(modelViewMatrix, [0.0, 1.0, 0.0], modelViewMatrix)
+  mat4.scale(modelViewMatrix, [2.0, 0.1, 2.0], modelViewMatrix)
+  uploadModelViewMatrixToShader()
+  drawCube(0.72, 0.53, 0.04, 1.0)
+  popModelViewMatrix()
+
+  // table leg
+  for (let i = -1; i <= 1; i += 2) {
+    for (let j = -1; j <= 1; j += 2) {
+      pushModelViewMatrix()
+      mat4.translate(modelViewMatrix, [i * 1.9, -0.1, j * 1.9], modelViewMatrix)
+      mat4.scale(modelViewMatrix, [0.1, 1.0, 0.1], modelViewMatrix)
+      uploadModelViewMatrixToShader()
+      drawCube(0.72, 0.53, 0.04, 1.0)
+      popModelViewMatrix()
+    }
+  }
+}
+
 const draw = () => {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -329,6 +351,12 @@ const draw = () => {
   uploadProjectionMatrixToShader()
 
   drawFloor(1.0, 0.0, 0.0, 1.0)
+
+  pushModelViewMatrix()
+  mat4.translate(modelViewMatrix, [0.0, 1.1, 0.0], modelViewMatrix)
+  uploadModelViewMatrixToShader()
+  drawTable()
+  popModelViewMatrix()
 
   pushModelViewMatrix()
   mat4.translate(modelViewMatrix, [0.0, 2.7, 0.0], modelViewMatrix)
