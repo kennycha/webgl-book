@@ -307,6 +307,16 @@ const drawFloor = (r, g, b, a) => {
   gl.drawElements(gl.TRIANGLE_FAN, floorVertexIndexBuffer.numberOfItems, gl.UNSIGNED_SHORT, 0)
 }
 
+const drawCube = (r, g, b, a) => {
+  gl.disableVertexAttribArray(shaderProgram.vertexColorAttribute)
+  gl.vertexAttrib4f(shaderProgram.vertexColorAttribute, r, g, b, a)
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer)
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer)
+  gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numberOfItems, gl.UNSIGNED_SHORT, 0)
+}
+
 const draw = () => {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -319,6 +329,14 @@ const draw = () => {
   uploadProjectionMatrixToShader()
 
   drawFloor(1.0, 0.0, 0.0, 1.0)
+
+  pushModelViewMatrix()
+  mat4.translate(modelViewMatrix, [0.0, 2.7, 0.0], modelViewMatrix)
+  mat4.scale(modelViewMatrix, [0.5, 0.5, 0.5], modelViewMatrix)
+  uploadModelViewMatrixToShader()
+  drawCube(0.0, 0.0, 1.0, 1.0)
+  popModelViewMatrix()
+
 }
 
 const startup = () => {
